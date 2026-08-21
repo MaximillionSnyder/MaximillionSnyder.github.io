@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Afinidad Uma · datos GameTora</title>
+  <link rel="stylesheet" href="./src/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Uma Afinidad <span class="fuente">datos GameTora</span></h1>
+    <nav>
+      <button id="tab-compat" class="tab activa">Compatibilidad</button>
+      <button id="tab-grupos" class="tab">Grupos</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="vista-compat" class="vista">
+      <div class="columna-grid">
+        <input id="buscador" type="search" placeholder="Buscar personaje (EN / JA)…" autocomplete="off" />
+        <div id="grid" class="grid"></div>
+      </div>
+      <aside class="panel">
+        <h2>Seleccionadas <span id="contador">(0/3)</span></h2>
+        <div id="selector" class="selector"></div>
+        <h2>Afinidad</h2>
+        <div id="resultado"></div>
+      </aside>
+    </section>
+
+    <section id="vista-grupos" class="vista oculta">
+      <p class="nota">Grupos de afinidad datamined (<code>succession_relation</code>). Puntaje de un par = suma de los puntos de los grupos que comparten.</p>
+      <label class="filtro-puntos">Puntos mínimos
+        <select id="min-puntos">
+          <option value="0">todos</option>
+          <option value="2">2+</option>
+          <option value="5">5+</option>
+          <option value="7">7+</option>
+          <option value="8">8</option>
+        </select>
+      </label>
+      <div id="grupos" class="grupos"></div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    Fuente: <a href="https://gametora.com/umamusume/compatibility" target="_blank" rel="noreferrer">GameTora Compatibility</a> · actualizá con <code>npm run fetch</code>
+  </footer>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

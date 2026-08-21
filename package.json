@@ -1,0 +1,10 @@
+{
+  "name": "gametora-side",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "fetch": "node scripts/fetch-gametora.mjs",
+    "dev": "node scripts/serve.mjs"
+  }
+}
