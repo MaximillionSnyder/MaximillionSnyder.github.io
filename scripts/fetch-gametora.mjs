@@ -25,10 +25,6 @@ async function fetchJson(url) {
   throw lastError;
 }
 
-function relationKey(base, lang) {
-  return lang === 'ja' ? base : `${lang}/${base}`;
-}
-
 function resolveUrl(manifest, key) {
   const hash = manifest[key];
   if (!hash) throw new Error(`Clave ausente en el manifiesto: ${key}`);
@@ -36,20 +32,18 @@ function resolveUrl(manifest, key) {
 }
 
 async function main() {
-  const langIdx = process.argv.indexOf('--lang');
-  const lang = langIdx >= 0 ? process.argv[langIdx + 1] : 'en';
-  if (!['en', 'ja', 'ko', 'zh-tw'].includes(lang)) {
-    throw new Error(`Idioma no soportado: ${lang} (usá en | ja | ko | zh-tw)`);
-  }
   const dryRun = process.argv.includes('--dry-run');
 
   console.log('Obteniendo manifiesto de GameTora...');
   const manifest = await fetchJson(MANIFEST_URL);
 
+  // Las tablas base (sin prefijo de idioma) son las completas y solo contienen
+  // números; las versiones por idioma (en/, ko/, zh-tw/) están recortadas.
+  // Los nombres localizados ya vienen en characters.json.
   const keys = {
     characters: 'characters',
-    relation: relationKey('db-files/succession_relation', lang),
-    member: relationKey('db-files/succession_relation_member', lang),
+    relation: 'db-files/succession_relation',
+    member: 'db-files/succession_relation_member',
   };
 
   const files = {};

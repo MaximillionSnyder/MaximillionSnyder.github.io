@@ -14,7 +14,9 @@ dependencias. Estructurado para migrar a Vite sin refactor.
 - `data/succession_relation.json` — grupos de afinidad y sus puntos
 - `data/succession_relation_member.json` — membresía personaje ↔ grupo
 
-Flags: `--lang en|ja|ko|zh-tw` (default `en`, datos global EN), `--dry-run`.
+Flag: `--dry-run`. Siempre se bajan las tablas base (sin prefijo de idioma),
+que son las únicas completas; son numéricas, así que no hay texto por idioma
+(los nombres localizados ya vienen en `characters.json`).
 
 La fuente es el manifiesto público de GameTora:
 `https://gametora.com/data/manifests/umamusume.json` → cada clave resuelve a
