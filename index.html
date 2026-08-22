@@ -3,6 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Visor de afinidad de Uma Musume con datos datamined de GameTora." />
+  <meta name="theme-color" content="#14161a" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+  <link rel="manifest" href="./manifest.webmanifest" />
   <title>Afinidad Uma · datos GameTora</title>
   <link rel="stylesheet" href="./src/styles.css" />
 </head>
@@ -48,6 +53,9 @@
     Fuente: <a href="https://gametora.com/umamusume/compatibility" target="_blank" rel="noreferrer">GameTora Compatibility</a> · actualizá con <code>npm run fetch</code>
   </footer>
 
+  <script type="module">
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js')
+  </script>
   <script type="module" src="./src/main.js"></script>
 </body>
 </html>

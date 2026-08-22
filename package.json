@@ -5,6 +5,12 @@
   "type": "module",
   "scripts": {
     "fetch": "node scripts/fetch-gametora.mjs",
-    "dev": "node scripts/serve.mjs"
+    "icons": "node scripts/generate-icons.mjs",
+    "dev": "node node_modules/vite/bin/vite.js",
+    "build": "node node_modules/vite/bin/vite.js build",
+    "preview": "node node_modules/vite/bin/vite.js preview"
+  },
+  "devDependencies": {
+    "vite": "^8.2.2"
   }
 }
