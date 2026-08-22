@@ -78,13 +78,17 @@ jobs:
           else
             NAME="0.0.0-$(git rev-parse --short HEAD)"
           fi
-          CODE="$GITHUB_RUN_NUMBER" node - NAME="$NAME" <<'EOF'
+          CODE="$GITHUB_RUN_NUMBER" NAME="$NAME" node - <<'EOF'
           const fs = require('node:fs')
           const m = JSON.parse(fs.readFileSync('twa-manifest.json', 'utf8'))
           m.appVersionCode = Number.parseInt(process.env.CODE, 10)
           m.appVersionName = process.env.NAME
           fs.writeFileSync('twa-manifest.json', JSON.stringify(m, null, 2) + '\n')
           EOF
+          {
+            echo "VERNAME=$NAME"
+            echo "VERCODE=$GITHUB_RUN_NUMBER"
+          } >> "$GITHUB_ENV"
 
       - name: Apuntar Bubblewrap al JDK/SDK del runner
         run: |
@@ -100,13 +104,22 @@ jobs:
       - name: Instalar Bubblewrap
         run: npm install -g @bubblewrap/cli
 
-      - name: Compilar AAB y APK
+      - name: Regenerar proyecto Android (sin prompts)
         env:
           BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ env.BW_STORE_PASS }}
           BUBBLEWRAP_KEY_ALIAS: afinidad
           BUBBLEWRAP_KEY_PASSWORD: ${{ env.BW_KEY_PASS }}
         run: |
-          printf 'y\n' | bubblewrap build --skipPwaValidation
+          bubblewrap update \
+            --appVersionName "$VERNAME" \
+            --appVersionCode "$VERCODE"
+
+      - name: Compilar AAB y APK
+        env:
+          BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ env.BW_STORE_PASS }}
+          BUBBLEWRAP_KEY_ALIAS: afinidad
+          BUBBLEWRAP_KEY_PASSWORD: ${{ env.BW_KEY_PASS }}
+        run: bubblewrap build --skipPwaValidation
 
       - name: Generar assetlinks.json
         run: |
