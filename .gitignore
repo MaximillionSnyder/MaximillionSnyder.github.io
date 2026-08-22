@@ -1,3 +1,6 @@
 node_modules/
 dist/
 .DS_Store
+*.keystore
+*.jks
+keystore-bootstrap.zip

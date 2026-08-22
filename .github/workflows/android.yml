@@ -1,0 +1,172 @@
+name: Android
+
+on:
+  workflow_dispatch:
+    inputs:
+      keystore_password:
+        description: 'Contraseña del keystore (solo primera vez, para el bootstrap)'
+        required: false
+        type: string
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+env:
+  KEYSTORE_PATH: android.keystore
+  KEY_ALIAS: afinidad
+  PAQUETE: com.maximillionsnyder.afinidad
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Decidir credenciales de firma
+        id: creds
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KS_KEY_PASS: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          BOOTSTRAP_PASS: ${{ inputs.keystore_password }}
+        run: |
+          set -euo pipefail
+
+          if [ -n "$KS_B64" ]; then
+            printf '%s' "$KS_B64" | base64 -d > "$KEYSTORE_PATH"
+            PASS="$KS_PASS"
+            KEY_PASS="${KS_KEY_PASS:-$KS_PASS}"
+            echo "modo=secrets" >> "$GITHUB_OUTPUT"
+          elif [ -n "${GITHUB_EVENT_NAME:-}" ] && [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ] && [ -n "$BOOTSTRAP_PASS" ]; then
+            PASS="$BOOTSTRAP_PASS"
+            KEY_PASS="$PASS"
+            keytool -genkeypair -v \
+              -keystore "$KEYSTORE_PATH" \
+              -alias "$KEY_ALIAS" \
+              -keyalg RSA -keysize 2048 -validity 10950 \
+              -storepass "$PASS" -keypass "$KEY_PASS" \
+              -dname "CN=Uma Afinidad, O=MaximillionSnyder, C=AR"
+            echo "modo=bootstrap" >> "$GITHUB_OUTPUT"
+          else
+            echo "::error::Sin credenciales. Opción A (recomendada): cargá los secrets ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD y ANDROID_KEY_PASSWORD. Opción B (primera vez): ejecutá el workflow manualmente escribiendo 'keystore_password' en el formulario."
+            exit 1
+          fi
+
+          {
+            echo "BW_STORE_PASS=$PASS"
+            echo "BW_KEY_PASS=$KEY_PASS"
+          } >> "$GITHUB_ENV"
+
+      - name: Versionar desde git (versionCode = run number, versionName = tag o sha)
+        run: |
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            NAME="${GITHUB_REF_NAME#v}"
+          else
+            NAME="0.0.0-$(git rev-parse --short HEAD)"
+          fi
+          CODE="$GITHUB_RUN_NUMBER" node - NAME="$NAME" <<'EOF'
+          const fs = require('node:fs')
+          const m = JSON.parse(fs.readFileSync('twa-manifest.json', 'utf8'))
+          m.appVersionCode = Number.parseInt(process.env.CODE, 10)
+          m.appVersionName = process.env.NAME
+          fs.writeFileSync('twa-manifest.json', JSON.stringify(m, null, 2) + '\n')
+          EOF
+
+      - name: Apuntar Bubblewrap al JDK/SDK del runner
+        run: |
+          mkdir -p ~/.bubblewrap
+          cat > ~/.bubblewrap/config.json <<EOF
+          {
+            "errorOnUnknownApilevel": false,
+            "jdkPath": "$JAVA_HOME",
+            "androidSdkPath": "$ANDROID_HOME"
+          }
+          EOF
+
+      - name: Instalar Bubblewrap
+        run: npm install -g @bubblewrap/cli
+
+      - name: Compilar AAB y APK
+        env:
+          BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ env.BW_STORE_PASS }}
+          BUBBLEWRAP_KEY_ALIAS: afinidad
+          BUBBLEWRAP_KEY_PASSWORD: ${{ env.BW_KEY_PASS }}
+        run: bubblewrap build --skipPwaValidation
+
+      - name: Generar assetlinks.json
+        run: |
+          FP=$(keytool -list -v \
+            -keystore "$KEYSTORE_PATH" \
+            -alias "$KEY_ALIAS" \
+            -storepass "$BW_STORE_PASS" \
+            | awk '/SHA256:/ {print $2; exit}')
+
+          ASSETLINKS=$(cat <<JSON
+          [{
+            "relation": ["delegate_permission/common.handle_all_urls"],
+            "target": {
+              "namespace": "android_app",
+              "package_name": "$PAQUETE",
+              "sha256_cert_fingerprints": ["$FP"]
+            }
+          }]
+          JSON
+          )
+
+          echo "$ASSETLINKS" > assetlinks.json
+
+          {
+            echo "### assetlinks.json"
+            echo ""
+            echo '```json'
+            echo "$ASSETLINKS"
+            echo '```'
+            echo ""
+            echo "Pegalo en \`public/.well-known/assetlinks.json\` y commiteá."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Empaquetar keystore nuevo (bootstrap)
+        if: steps.creds.outputs.modo == 'bootstrap'
+        run: zip -P "$BOOTSTRAP_ZIP_PASS" keystore-bootstrap.zip android.keystore assetlinks.json
+        env:
+          BOOTSTRAP_ZIP_PASS: ${{ inputs.keystore_password }}
+
+      - name: Subir paquetes
+        uses: actions/upload-artifact@v4
+        with:
+          name: afinidad-android-${{ github.run_number }}
+          path: |
+            app-release-bundle.aab
+            app-release-signed.apk
+            assetlinks.json
+          retention-days: 30
+
+      - name: Subir keystore bootstrap
+        if: steps.creds.outputs.modo == 'bootstrap'
+        uses: actions/upload-artifact@v4
+        with:
+          name: keystore-bootstrap-${{ github.run_number }}
+          path: keystore-bootstrap.zip
+          retention-days: 1
+
+      - name: Publicar release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            app-release-bundle.aab
+            app-release-signed.apk

@@ -1,0 +1,40 @@
+{
+  "packageId": "com.maximillionsnyder.afinidad",
+  "host": "https://maximillionsnyder.github.io",
+  "name": "Uma Afinidad",
+  "launcherName": "Afinidad",
+  "display": "standalone",
+  "themeColor": "#14161a",
+  "themeColorDark": "#14161a",
+  "navigationColor": "#14161a",
+  "navigationColorDark": "#14161a",
+  "navigationDividerColor": "#14161a",
+  "navigationDividerColorDark": "#14161a",
+  "backgroundColor": "#14161a",
+  "orientation": "default",
+  "startUrl": "/afinidad/",
+  "iconUrl": "https://maximillionsnyder.github.io/afinidad/icons/maskable-512.png",
+  "maskableIconUrl": null,
+  "monochromeIconUrl": null,
+  "splashScreenFadeOutDuration": 300,
+  "webManifestUrl": "https://maximillionsnyder.github.io/afinidad/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "enableNotifications": false,
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "includeSourceCode": false,
+  "shortcuts": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "signingKey": {
+    "path": "android.keystore",
+    "alias": "afinidad"
+  },
+  "fingerprints": [],
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  }
+}

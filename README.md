@@ -64,27 +64,47 @@ https://maximillionsnyder.github.io/afinidad/
 Requisito único (una vez): en el repo → Settings → Pages → Source =
 **GitHub Actions**.
 
-## App Android (Google Play)
+## App Android (build en GitHub Actions)
 
 La app es una **TWA** (Trusted Web Activity): un contenedor oficial que abre
 la PWA a pantalla completa, sin código nativo que mantener. Los contenidos
 son idénticos por definición y cada deploy web actualiza la app.
 
-Pasos (sin Android SDK local):
+El workflow `.github/workflows/android.yml` compila con
+[Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap) en runners de
+GitHub y produce `app-release-bundle.aab` (Play Store) +
+`app-release-signed.apk` (instalación directa). No requiere Android SDK
+local. Se dispara manualmente o al pushear un tag `v*`.
 
-1. Entrar a <https://www.pwabuilder.com> y pegar la URL pública del sitio.
-2. Package name sugerido: `com.maximillionsnyder.afinidad`.
-3. Generar el paquete **Android** (.aab). PWABuilder crea un keystore:
-   **guardar el archivo `.keystore` y las contraseñas** — sin él no se pueden
-   publicar actualizaciones de la app.
-4. En Play Console crear la app y subir el `.aab`.
-5. Copiar el contenido de `assetlinks.json` que entrega PWABuilder a
-   `public/.well-known/assetlinks.json`, redeployar. Esto verifica el dominio
-   contra la firma del keystore y elimina la barra de URL de Chrome.
+### Primera vez (bootstrap)
 
-Notas de Play Console: registro único USD 25; las cuentas personales nuevas
-requieren testing cerrado (~12 testers durante 14 días) antes de producción;
-los datos ya viajan precacheados así que la app funciona offline.
+1. Actions → **Android** → Run workflow → escribir `keystore_password`
+   (una contraseña larga que elijas vos). El resto se genera solo.
+2. Descargar el artifact `keystore-bootstrap-N`: contiene
+   `android.keystore` + `assetlinks.json`, cifrado con esa contraseña.
+   **Guardar ese keystore** — sin él no hay actualizaciones en Play.
+3. Crear los secrets del repo (Settings → Secrets and variables → Actions):
+   - `ANDROID_KEYSTORE_BASE64` = `base64 -w0 android.keystore`
+   - `ANDROID_KEYSTORE_PASSWORD` = la contraseña elegida
+   - `ANDROID_KEY_PASSWORD` = ídem
+4. Borrar el artifact bootstrap.
+5. Copiar el `assetlinks.json` del summary/artifact a
+   `public/.well-known/assetlinks.json` y committear: verifica el dominio
+   contra la firma y elimina la barra de URL.
+
+### Corridas siguientes
+
+- Botón *Run workflow* (sin password): usa los secrets y firma igual.
+- Tag para release: `git tag v1.0.1 && git push --tags` → crea GitHub Release
+  con AAB+APK. El `versionCode` es automático (`run number`) así que siempre
+  sube; Play Console exige que sea mayor al publicado.
+
+Notas: registro en Play USD 25 una vez; cuentas personales nuevas requieren
+testing cerrado (~12 testers durante 14 días); la TWA carga la PWA live,
+que ya funciona offline gracias al service worker.
+
+Alternativa sin CI: <https://www.pwabuilder.com> genera el `.aab` desde la
+URL del sitio (mismo resultado, menos reproducible).
 
 ## Estructura
 
