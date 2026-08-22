@@ -106,7 +106,7 @@ jobs:
           BUBBLEWRAP_KEY_ALIAS: afinidad
           BUBBLEWRAP_KEY_PASSWORD: ${{ env.BW_KEY_PASS }}
         run: |
-          printf 'n\n' | bubblewrap build --skipPwaValidation
+          printf 'y\n' | bubblewrap build --skipPwaValidation
 
       - name: Generar assetlinks.json
         run: |
