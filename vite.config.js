@@ -71,7 +71,8 @@ self.addEventListener('fetch', (evento) => {
           if (respuesta.ok) await cache.put(indice, respuesta.clone())
           return respuesta
         } catch {
-          return (await cache.match(indice)) || Response.error()
+          const offline = new URL('./offline.html', self.registration.scope).href
+          return (await cache.match(indice)) || (await cache.match(offline)) || Response.error()
         }
       })(),
     )
@@ -129,6 +130,6 @@ function serviceWorkerPlugin() {
 }
 
 export default defineConfig({
-  base: '/afinidad/',
+  base: '/',
   plugins: [copiarDatos(), serviceWorkerPlugin()],
 })

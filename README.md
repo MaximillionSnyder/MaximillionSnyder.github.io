@@ -58,7 +58,7 @@ Cada push a `main` dispara `.github/workflows/deploy.yml`, que compila y
 publica `dist/` en:
 
 ```
-https://maximillionsnyder.github.io/afinidad/
+https://maximillionsnyder.github.io/
 ```
 
 Requisito único (una vez): en el repo → Settings → Pages → Source =

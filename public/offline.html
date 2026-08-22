@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sin conexión · Uma Afinidad</title>
+  <style>
+    html { background: #14161a; color-scheme: dark; }
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      background: #14161a;
+      color: #e8eaf0;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      text-align: center;
+      padding: 2rem;
+      box-sizing: border-box;
+    }
+    h1 { font-size: 1.3rem; margin: 0.75rem 0 0.4rem; }
+    p { color: #9aa0ad; margin: 0 0 1.5rem; line-height: 1.5; }
+    button {
+      background: #f08c3a;
+      border: none;
+      color: #14161a;
+      font-weight: bold;
+      font-size: 1rem;
+      padding: 0.7rem 1.8rem;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <svg width="56" height="56" viewBox="0 0 512 512" aria-hidden="true">
+      <path fill="#f08c3a" transform="translate(256 262) scale(150)" d="M0,0.68 C-0.34,0.38 -0.62,0.14 -0.62,-0.14 C-0.62,-0.38 -0.44,-0.52 -0.24,-0.52 C-0.12,-0.52 -0.04,-0.46 0,-0.36 C0.04,-0.46 0.12,-0.52 0.24,-0.52 C0.44,-0.52 0.62,-0.38 0.62,-0.14 C0.62,0.14 0.34,0.38 0,0.68 Z"/>
+    </svg>
+    <h1>Sin conexión</h1>
+    <p>La primera vez necesitás internet para descargar los datos.<br />Después la app funciona sin conexión.</p>
+    <button onclick="location.reload()">Reintentar</button>
+  </main>
+</body>
+</html>
