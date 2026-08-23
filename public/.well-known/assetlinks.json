@@ -1,10 +1,8 @@
-[
-  {
-    "relation": ["delegate_permission/common.handle_all_urls"],
-    "target": {
-      "namespace": "android_app",
-      "package_name": "com.maximillionsnyder.afinidad",
-      "sha256_cert_fingerprints": ["31:52:13:83:29:AC:5F:0E:34:5D:AF:5D:1D:8A:EB:49:02:B8:9D:5F:80:D6:13:5C:15:8D:F7:07:B9:B0:02:3F"]
-    }
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.maximillionsnyder.afinidad",
+    "sha256_cert_fingerprints": ["31:52:13:83:29:AC:5F:0E:34:5D:AF:5D:1D:8A:EB:49:02:B8:9D:5F:80:D6:13:5C:15:8D:F7:07:B9:B0:02:3F"]
   }
-]
+}]
