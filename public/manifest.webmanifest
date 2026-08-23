@@ -2,7 +2,7 @@
   "id": "/",
   "name": "Uma Afinidad",
   "short_name": "Afinidad",
-  "description": "Visor de personajes y afinidad de Uma Musume con los datos datamined que usa la calculadora de compatibilidad de GameTora.",
+  "description": "Visor de personajes y afinidad de Uma Musume con datos datamined.",
   "lang": "es",
   "dir": "ltr",
   "start_url": "/",

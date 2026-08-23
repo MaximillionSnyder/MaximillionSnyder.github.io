@@ -28,7 +28,6 @@ body {
 }
 
 .topbar h1 { font-size: 1.15rem; margin: 0; }
-.fuente { font-size: 0.75rem; color: var(--acento); font-weight: normal; }
 
 .tab {
   background: none;

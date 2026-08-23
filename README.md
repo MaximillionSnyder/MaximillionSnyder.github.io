@@ -1,7 +1,6 @@
 # afinidad
 
-Visor de personajes y afinidad de Uma Musume con los datos datamined que usa
-la calculadora de compatibilidad de GameTora.
+Visor de personajes y afinidad de Uma Musume con datos datamined.
 
 Proyecto independiente (side project): vanilla JS + ES modules, cero
 dependencias de runtime. Se publica como **web (PWA)** en GitHub Pages y como
@@ -9,7 +8,7 @@ dependencias de runtime. Se publica como **web (PWA)** en GitHub Pages y como
 
 ## Datos
 
-`npm run fetch` descarga desde GameTora:
+`npm run fetch` descarga las tablas datamined:
 
 - `data/characters.json` — personajes (char_id, en_name, jp_name, url_name…)
 - `data/succession_relation.json` — grupos de afinidad y sus puntos
@@ -19,9 +18,8 @@ Flag: `--dry-run`. Siempre se bajan las tablas base (sin prefijo de idioma),
 que son las únicas completas; son numéricas, así que no hay texto por idioma
 (los nombres localizados ya vienen en `characters.json`).
 
-La fuente es el manifiesto público de GameTora:
-`https://gametora.com/data/manifests/umamusume.json` → cada clave resuelve a
-`https://gametora.com/data/umamusume/<clave>.<hash>.json`.
+La fuente es un manifiesto público de datos datamined; cada clave resuelve a
+un JSON versionado con hash.
 
 ## Uso
 
