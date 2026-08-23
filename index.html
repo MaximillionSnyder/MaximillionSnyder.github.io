@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="description" content="Visor de afinidad de Uma Musume con datos datamined." />
   <meta name="theme-color" content="#14161a" />
   <style>html{background:#14161a;color-scheme:dark}</style>
@@ -13,46 +13,74 @@
   <link rel="stylesheet" href="./src/styles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <h1>Uma Afinidad</h1>
-    <nav>
-      <button id="tab-compat" class="tab activa">Compatibilidad</button>
-      <button id="tab-grupos" class="tab">Grupos</button>
+  <header class="app-bar">
+    <h1 class="titulo-app">Uma Afinidad</h1>
+    <nav class="segmentos" aria-label="Secciones">
+      <button type="button" id="tab-compat" class="segmento activa">Compatibilidad</button>
+      <button type="button" id="tab-grupos" class="segmento">Grupos</button>
     </nav>
   </header>
 
   <main>
     <section id="vista-compat" class="vista">
       <div class="columna-grid">
-        <input id="buscador" type="search" placeholder="Buscar personaje (EN / JA)…" autocomplete="off" />
+        <div class="buscador-sticky">
+          <svg class="icono-lupa" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <input id="buscador" type="search" placeholder="Buscar personaje (EN / JA)…" autocomplete="off" />
+        </div>
         <div id="grid" class="grid"></div>
       </div>
+
       <aside class="panel">
-        <h2>Seleccionadas <span id="contador">(0/3)</span></h2>
-        <div id="selector" class="selector"></div>
-        <h2>Afinidad</h2>
-        <div id="resultado"></div>
+        <h2 class="titulo-seccion">Seleccionadas <span class="js-contador contador">(0/3)</span></h2>
+        <div id="slot-selector-panel" class="slot"></div>
+        <h2 class="titulo-seccion">Afinidad</h2>
+        <div id="slot-resultado-panel" class="slot"></div>
       </aside>
     </section>
 
     <section id="vista-grupos" class="vista oculta">
-      <p class="nota">Grupos de afinidad datamined (<code>succession_relation</code>). Puntaje de un par = suma de los puntos de los grupos que comparten.</p>
-      <label class="filtro-puntos">Puntos mínimos
-        <select id="min-puntos">
-          <option value="0">todos</option>
-          <option value="2">2+</option>
-          <option value="5">5+</option>
-          <option value="7">7+</option>
-          <option value="8">8</option>
-        </select>
-      </label>
+      <p class="nota intro">Grupos de afinidad datamined (<code>succession_relation</code>). Puntaje de un par = suma de los puntos de los grupos que comparten.</p>
+      <div id="filtro-puntos" class="chips-filtro" role="group" aria-label="Puntos mínimos"></div>
       <div id="grupos" class="grupos"></div>
     </section>
   </main>
 
-  <footer class="pie">
-    Datos datamined · actualizá con <code>npm run fetch</code>
-  </footer>
+  <footer class="pie">Datos datamined · actualizá con <code>npm run fetch</code></footer>
+
+  <div id="barra-seleccion" class="barra-seleccion oculta">
+    <div id="selector" class="selector"></div>
+    <span id="contador" class="js-contador contador">(0/3)</span>
+    <button type="button" id="ver-afinidad" class="btn-filled">
+      Ver afinidad
+    </button>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Secciones">
+    <button type="button" id="nav-compat" class="destino activa" aria-current="page">
+      <span class="destino-icono">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      </span>
+      <span class="destino-label">Compatibilidad</span>
+    </button>
+    <button type="button" id="nav-grupos" class="destino">
+      <span class="destino-icono">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+      </span>
+      <span class="destino-label">Grupos</span>
+    </button>
+  </nav>
+
+  <div id="scrim" class="scrim oculta"></div>
+  <section id="sheet" class="sheet" role="dialog" aria-modal="true" aria-label="Resultados de afinidad">
+    <div class="sheet-agarre" id="sheet-agarre">
+      <span class="agarre" aria-hidden="true"></span>
+    </div>
+    <h2 class="titulo-seccion sheet-titulo">Afinidad <span class="js-contador contador">(0/3)</span></h2>
+    <div class="sheet-cuerpo">
+      <div id="resultado"></div>
+    </div>
+  </section>
 
   <script type="module">
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js')

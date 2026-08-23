@@ -1,11 +1,30 @@
+const OPCIONES = [0, 2, 5, 7, 8];
+
 export function montarGrupos(modelo) {
   const cont = document.querySelector('#grupos');
-  const selectMin = document.querySelector('#min-puntos');
+  const filtro = document.querySelector('#filtro-puntos');
+  let min = 0;
 
-  selectMin.addEventListener('change', render);
+  for (const valor of OPCIONES) {
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'chip-filtro' + (valor === min ? ' activa' : '');
+    chip.textContent = valor === 0 ? 'Todos' : `${valor}+ pt`;
+    chip.setAttribute('aria-pressed', String(valor === min));
+    chip.addEventListener('click', () => {
+      min = valor;
+      for (const c of filtro.children) {
+        const activo = Number(c.dataset.valor) === min;
+        c.classList.toggle('activa', activo);
+        c.setAttribute('aria-pressed', String(activo));
+      }
+      render();
+    });
+    chip.dataset.valor = String(valor);
+    filtro.append(chip);
+  }
 
   function render() {
-    const min = Number(selectMin.value);
     cont.replaceChildren();
     for (const g of modelo.todosLosGrupos()) {
       if (g.puntos < min) continue;
