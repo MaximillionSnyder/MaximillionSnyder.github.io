@@ -5,7 +5,7 @@ import { montarSelector } from './ui/selector.js';
 import { montarResultado } from './ui/result.js';
 import { montarGrupos } from './ui/groups.js';
 
-const MAX_SLOTS = 3;
+const MAX_SLOTS = 7;
 const MQ_DESKTOP = '(min-width: 840px)';
 
 const data = await cargarDatos();

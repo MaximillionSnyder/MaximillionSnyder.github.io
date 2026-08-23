@@ -10,7 +10,7 @@ export function montarSelector(modelo, seleccion, toggle) {
 
   function render() {
     for (const el of document.querySelectorAll('.js-contador')) {
-      el.textContent = `(${seleccion.length}/3)`;
+      el.textContent = `(${seleccion.length}/7)`;
     }
     cont.replaceChildren();
     if (seleccion.length === 0) return;

@@ -1,7 +1,7 @@
 # afinidad
 
 Visor de personajes y afinidad de Uma Musume con datos datamined.
-Seleccioná hasta 3 personajes para calcular su compatibilidad o explorá
+Seleccioná hasta 7 personajes para calcular su compatibilidad o explorá
 los grupos de afinidad.
 
 ## Stack

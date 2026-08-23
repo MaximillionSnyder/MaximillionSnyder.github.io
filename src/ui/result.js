@@ -40,15 +40,15 @@ export function montarResultado(modelo, seleccion) {
       return;
     }
     for (const [a, b] of paresDe(seleccion)) cont.innerHTML += filaPar(a, b);
-    if (seleccion.length === 3) {
-      const total = modelo.puntajeTrio(seleccion);
+    if (seleccion.length >= 3) {
+      const total = modelo.puntajeGrupo(seleccion);
       cont.innerHTML += `
         <div class="trio">
-          <span>Total trío</span>
+          <span>Total (${seleccion.length} personajes)</span>
           <span class="puntos">${total}</span>
         </div>
         <details class="compartido-trio">
-          <summary>Grupos compartidos por los 3</summary>
+          <summary>Grupos compartidos por los ${seleccion.length}</summary>
           ${
             modelo.gruposCompartidos(seleccion).map((g) => `<span class="tag">#${g.tipo} · ${g.puntos}pt</span>`).join(' ') ||
             '<span class="nota">ninguno</span>'
