@@ -31,14 +31,6 @@ export function crearModelo({ characters, relations, members }) {
     return gruposCompartidos([a, b]).reduce((total, g) => total + g.puntos, 0);
   }
 
-  function puntajeGrupo(ids) {
-    let total = 0;
-    for (let i = 0; i < ids.length; i++) {
-      for (let j = i + 1; j < ids.length; j++) total += puntajePar(ids[i], ids[j]);
-    }
-    return total;
-  }
-
   function rango(puntos) {
     return UMBRALES.find((u) => puntos >= u.min) ?? null;
   }
@@ -68,7 +60,6 @@ export function crearModelo({ characters, relations, members }) {
     porId,
     gruposCompartidos,
     puntajePar,
-    puntajeGrupo,
     rango,
     gruposDeChar,
     todosLosGrupos,

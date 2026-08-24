@@ -617,7 +617,7 @@ code {
     color: var(--on-secondary-container);
   }
 
-  .bottom-nav, .barra-seleccion, .scrim, .sheet { display: none !important; }
+  .bottom-nav, .barra-seleccion, .sheet { display: none !important; }
 
   .buscador-sticky {
     position: static;
@@ -656,6 +656,101 @@ code {
   #vista-grupos > .chips-filtro, #vista-grupos > .nota.intro { padding-left: 0; padding-right: 0; }
   .grupos { padding: 0; }
   .chips-filtro { padding-left: 0; }
+}
+
+/* ---------- Roles de herencia ---------- */
+
+.chip .rol {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--on-surface-variant);
+  padding-left: 6px;
+}
+.chip .rol-hijo { color: var(--primary); }
+
+.roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  justify-content: center;
+}
+.roles b {
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: var(--radio-full);
+  background: var(--surface-container-high);
+  border: 1px solid var(--outline-variant);
+  color: var(--on-surface-variant);
+}
+.roles b:first-child { background: var(--primary-container); border-color: transparent; color: var(--on-primary-container); }
+
+.vinculos h3 {
+  margin: 14px 0 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+}
+.vinculos .nota { display: block; padding: 2px 2px 4px; }
+.vinculos .par + .par { margin-top: 8px; }
+
+/* ---------- Modal ---------- */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  margin: auto;
+  width: min(340px, calc(100vw - 48px));
+  height: fit-content;
+  background: var(--surface-container-high);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radio-lg);
+  box-shadow: var(--sombra-3);
+  padding: 20px;
+  animation: elevarse 180ms ease;
+}
+.modal h3 { margin: 0 0 6px; font-size: 1rem; font-weight: 600; }
+.modal-acciones {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.btn-texto {
+  height: 38px;
+  padding: 0 14px;
+  border-radius: var(--radio-full);
+  color: var(--primary);
+  font-size: 0.83rem;
+  font-weight: 500;
+}
+
+/* ---------- Toast ---------- */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  translate: -50% 0;
+  bottom: calc(var(--inset-bottom) + var(--alto-nav) + 76px);
+  z-index: 70;
+  max-width: calc(100vw - 48px);
+  background: var(--on-surface);
+  color: var(--surface);
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 10px 18px;
+  border-radius: var(--radio-sm);
+  box-shadow: var(--sombra-2);
+  animation: elevarse 180ms ease;
 }
 
 /* ---------- Accesibilidad ---------- */
