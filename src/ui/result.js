@@ -9,10 +9,10 @@ export function montarResultado(modelo, seleccion) {
   const nombre = (id) => modelo.porId.get(id)?.en_name ?? id;
 
   function filaVinculo(v) {
-    const [a, b] = v.ids;
-    const puntos = v.esCorredora ? 0 : modelo.puntajePar(a, b);
+    const nombres = v.ids.map((id) => nombre(id)).join(' × ');
+    const puntos = puntosDe(v);
     const rango = modelo.rango(puntos);
-    const compartidos = modelo.gruposCompartidos([a, b]);
+    const compartidos = modelo.gruposCompartidos(v.ids);
     const detalle = compartidos
       .slice(0, 6)
       .map((g) => `<li>#${g.tipo} · ${g.puntos}pt</li>`)
@@ -21,12 +21,26 @@ export function montarResultado(modelo, seleccion) {
     return `
       <div class="par">
         <div class="par-cabecera">
-          <span>${nombre(a)} × ${nombre(b)}</span>
+          <span>${nombres}</span>
           <span class="puntos ${rango?.clase ?? ''}">${rango ? rango.simbolo + ' ' : ''}${puntos}</span>
         </div>
         ${v.esCorredora ? '<p class="nota">Afinidad 0 en el juego: es la misma que la corredora.</p>' : ''}
         ${compartidos.length ? `<ul class="detalle">${detalle}${extra}</ul>` : '<p class="nota">Sin grupos en común.</p>'}
       </div>`;
+  }
+
+  function puntosDe(v) {
+    if (v.esCorredora) return 0;
+    return v.ids.length === 3
+      ? modelo.puntajeTrio(...v.ids)
+      : modelo.puntajePar(v.ids[0], v.ids[1]);
+  }
+
+  /* Umbrales del juego sobre el total: ○ ≥ 51, ◎ ≥ 151, △ debajo. */
+  function rangoTotal(total) {
+    if (total >= 151) return { simbolo: '◎', clase: 'rank-great' };
+    if (total >= 51) return { simbolo: '○', clase: 'rank-good' };
+    return { simbolo: '△', clase: 'rank-fair' };
   }
 
   function filaEntrePadres(ids) {
@@ -43,12 +57,13 @@ export function montarResultado(modelo, seleccion) {
     const arbol = armarArbol(seleccion);
     const vs = vinculos(arbol);
     const porTipo = (tipo) => vs.filter((v) => v.tipo === tipo);
-    const total = vs.reduce((t, v) => t + (v.esCorredora ? 0 : modelo.puntajePar(...v.ids)), 0);
+    const total = vs.reduce((t, v) => t + puntosDe(v), 0);
+    const rt = rangoTotal(total);
 
     let html = `
       <div class="trio">
         <span>Total herencia</span>
-        <span class="puntos">${total}</span>
+        <span class="puntos ${rt.clase}">${rt.simbolo} ${total}</span>
       </div>`;
 
     const hp = porTipo('hijo-padre').map(filaVinculo).join('');
@@ -66,9 +81,11 @@ export function montarResultado(modelo, seleccion) {
         : '<p class="nota">' + (arbol.padres.some((p) => p != null) ? 'Elegí el otro padre.' : 'Faltan los padres.') + '</p>'
     }</section>`;
 
-    const pa = porTipo('padre-abuelo').map(filaVinculo).join('');
-    html += `<section class="vinculos"><h3>Padres × Abuelos</h3>${
-      pa || '<p class="nota">Todavía no hay abuelos.</p>'
+    const pa = porTipo('hijo-padre-abuelo').map(filaVinculo).join('');
+    html += `<section class="vinculos"><h3>Hijo × Padres × Abuelos</h3>${
+      arbol.hijo == null
+        ? '<p class="nota">Falta elegir al hijo para calcular estas relaciones.</p>'
+        : pa || '<p class="nota">Todavía no hay abuelos.</p>'
     }</section>`;
 
     if (!arbol.hijo && contarSeleccionados(seleccion) > 0) {

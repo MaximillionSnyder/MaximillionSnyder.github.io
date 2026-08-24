@@ -70,15 +70,20 @@ export function vinculos(arbol) {
     }
   }
   if (padres[0] != null && padres[1] != null) v.push({ tipo: 'entre-padres', ids: [...padres] });
-  for (let p = 0; p < 2; p++) {
-    if (padres[p] == null) continue;
-    for (const a of abuelosDe[p]) {
-      if (a != null)
-        v.push({
-          tipo: 'padre-abuelo',
-          ids: [padres[p], a],
-          esCorredora: hijo != null && a === hijo,
-        });
+  /* Regla del juego: cada abuelo se vincula con el padre de su misma rama
+     y el hijo a la vez (grupos comunes a los tres). Si el abuelo es la
+     misma corredora, la relación vale 0. */
+  if (hijo != null) {
+    for (let p = 0; p < 2; p++) {
+      if (padres[p] == null) continue;
+      for (const a of abuelosDe[p]) {
+        if (a != null)
+          v.push({
+            tipo: 'hijo-padre-abuelo',
+            ids: [hijo, padres[p], a],
+            esCorredora: a === hijo,
+          });
+      }
     }
   }
   return v;

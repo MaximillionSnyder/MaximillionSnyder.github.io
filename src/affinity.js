@@ -31,6 +31,10 @@ export function crearModelo({ characters, relations, members }) {
     return gruposCompartidos([a, b]).reduce((total, g) => total + g.puntos, 0);
   }
 
+  function puntajeTrio(a, b, c) {
+    return gruposCompartidos([a, b, c]).reduce((total, g) => total + g.puntos, 0);
+  }
+
   function rango(puntos) {
     return UMBRALES.find((u) => puntos >= u.min) ?? null;
   }
@@ -60,6 +64,7 @@ export function crearModelo({ characters, relations, members }) {
     porId,
     gruposCompartidos,
     puntajePar,
+    puntajeTrio,
     rango,
     gruposDeChar,
     todosLosGrupos,
