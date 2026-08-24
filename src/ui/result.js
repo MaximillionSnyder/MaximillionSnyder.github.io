@@ -36,13 +36,6 @@ export function montarResultado(modelo, seleccion) {
       : modelo.puntajePar(v.ids[0], v.ids[1]);
   }
 
-  /* Umbrales del juego sobre el total: ○ ≥ 51, ◎ ≥ 151, △ debajo. */
-  function rangoTotal(total) {
-    if (total >= 151) return { simbolo: '◎', clase: 'rank-great' };
-    if (total >= 51) return { simbolo: '○', clase: 'rank-good' };
-    return { simbolo: '△', clase: 'rank-fair' };
-  }
-
   function filaEntrePadres(ids) {
     return filaVinculo({ ids, tipo: 'entre-padres' });
   }
@@ -58,7 +51,7 @@ export function montarResultado(modelo, seleccion) {
     const vs = vinculos(arbol);
     const porTipo = (tipo) => vs.filter((v) => v.tipo === tipo);
     const total = vs.reduce((t, v) => t + puntosDe(v), 0);
-    const rt = rangoTotal(total);
+    const rt = modelo.rangoTotal(total);
 
     let html = `
       <div class="trio">

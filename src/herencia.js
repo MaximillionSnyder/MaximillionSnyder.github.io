@@ -39,15 +39,39 @@ export function contarSeleccionados(seleccion) {
   return seleccion.filter(Boolean).length;
 }
 
-/* Regla del juego: el hijo no puede ser padre y los padres deben ser
-   distintos entre sí. Hijo y abuelos no tienen restricciones. */
+/* Rama de un slot de abuelo: slots 3-4 → rama 0 (de Padre 1),
+   slots 5-6 → rama 1 (de Padre 2). */
+function ramaDeSlot(i) {
+  return Math.floor((i - 3) / 2);
+}
+
+/* Reglas del juego al colocar un personaje en un slot:
+   - el hijo no puede ser padre (en ninguna rama);
+   - los padres deben ser distintos entre sí;
+   - nadie puede ser abuelo de su propia rama;
+   - los dos abuelos de una misma rama no se repiten;
+   - el hijo SÍ puede ser abuelo (corredora: esa relación vale 0) y los
+     cruces entre ramas están permitidos (p. ej. el padre como abuelo de la
+     otra rama, o el mismo abuelo en ambas ramas). */
 export function puedeIrEn(seleccion, slot, id) {
   if (slot < 0 || slot >= SLOTS || !id) return false;
-  if (rolDeSlot(slot) !== 'padre') return true;
-  for (let i = 1; i <= 2; i++) {
-    if (i !== slot && seleccion[i] === id) return false;
-    if (i === slot && seleccion[0] === id) return false;
+  const rol = rolDeSlot(slot);
+  if (rol === 'hijo') {
+    return seleccion[1] !== id && seleccion[2] !== id;
   }
+  if (rol === 'padre') {
+    const rama = slot - 1;
+    for (let i = 0; i <= 2; i++) {
+      if (seleccion[i] === id) return false; /* ya es el hijo u otro padre */
+    }
+    for (const a of [seleccion[3 + rama * 2], seleccion[4 + rama * 2]]) {
+      if (a === id) return false; /* prohibido: abuelo de su propia rama */
+    }
+    return true;
+  }
+  const hermano = slot % 2 === 1 ? slot + 1 : slot - 1;
+  if (seleccion[1 + ramaDeSlot(slot)] === id) return false; /* su propio padre */
+  if (seleccion[hermano] === id) return false; /* abuelo repetido en la rama */
   return true;
 }
 

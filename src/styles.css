@@ -450,6 +450,57 @@ code {
 .cantidad { color: var(--on-surface-variant); font-size: 0.78rem; }
 .miembros { color: var(--on-surface-variant); font-size: 0.82rem; line-height: 1.6; margin: 8px 0 2px; }
 
+/* ---------- Top linajes ---------- */
+
+.top-combos { padding: 0 16px; margin-bottom: 6px; }
+.top-combos > .titulo-seccion { margin-top: 10px; }
+.top-combos .nota.intro { margin-top: 2px; }
+
+.lista-top {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 12px 0 16px;
+  padding: 0;
+}
+.lista-top li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radio-md);
+  padding: 8px 12px;
+}
+.lista-top li.nota { background: transparent; border-style: dashed; }
+.lista-top .pos {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radio-full);
+  background: var(--surface-container-high);
+  color: var(--on-surface-variant);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.lista-top .nombres {
+  flex: 1;
+  min-width: 150px;
+  font-size: 0.86rem;
+  font-weight: 500;
+}
+.lista-top .puntos { flex-shrink: 0; }
+.lista-top .btn-filled {
+  flex-shrink: 0;
+  height: 34px;
+  padding: 0 14px;
+  font-size: 0.8rem;
+}
+
 /* ---------- Pie ---------- */
 
 .pie {

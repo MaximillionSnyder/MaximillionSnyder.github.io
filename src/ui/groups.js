@@ -1,9 +1,11 @@
 const OPCIONES = [0, 2, 5, 7, 8];
 
-export function montarGrupos(modelo) {
+export function montarGrupos(modelo, verHerencia) {
   const cont = document.querySelector('#grupos');
   const filtro = document.querySelector('#filtro-puntos');
   let min = 0;
+
+  montarTop(modelo, verHerencia);
 
   for (const valor of OPCIONES) {
     const chip = document.createElement('button');
@@ -40,4 +42,27 @@ export function montarGrupos(modelo) {
   }
 
   render();
+}
+
+function montarTop(modelo, verHerencia) {
+  const lista = document.querySelector('#top-linajes');
+  lista.innerHTML = '<li class="nota">Calculando…</li>';
+
+  /* Diferido: el primer cálculo tarda ~1 s y no debe bloquear el render. */
+  setTimeout(() => {
+    const top = modelo.topLinajes(20);
+    lista.replaceChildren();
+    top.forEach((combo, i) => {
+      const r = modelo.rangoTotal(combo.puntos);
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span class="pos">${i + 1}</span>
+        <span class="nombres">${combo.hijo.en_name} × ${combo.padre.en_name} × ${combo.madre.en_name}</span>
+        <span class="puntos ${r.clase}">${r.simbolo} ${combo.puntos}</span>
+        <button type="button" class="btn-filled">Ver herencia</button>`;
+      li.querySelector('button').addEventListener('click', () => verHerencia(combo));
+      lista.append(li);
+    });
+    if (lista.children.length === 0) lista.innerHTML = '<li class="nota">Sin datos.</li>';
+  }, 0);
 }

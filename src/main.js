@@ -23,7 +23,11 @@ function toggle(id) {
     seleccion[slot] = id;
     document.dispatchEvent(new CustomEvent('seleccion-cambio'));
   } else {
-    avisar(slot === -1 ? 'Selección completa (7/7)' : 'El hijo no puede ser padre ni repetirse un padre');
+    avisar(
+      slot === -1
+        ? 'Selección completa (7/7)'
+        : 'Regla del juego: el hijo no puede ser padre; en cada rama no se repiten padre ni abuelos',
+    );
   }
 }
 
@@ -37,10 +41,27 @@ function quitarSlot(i) {
   document.dispatchEvent(new CustomEvent('seleccion-cambio'));
 }
 
+function verLinaje({ hijo, padre, madre, abuelos }) {
+  const [b1, b2] = abuelos;
+  seleccion.splice(
+    0,
+    7,
+    hijo.char_id,
+    padre.char_id,
+    madre.char_id,
+    b1[0].char_id,
+    b1[1].char_id,
+    b2[0].char_id,
+    b2[1].char_id,
+  );
+  document.dispatchEvent(new CustomEvent('seleccion-cambio'));
+  activarTab('compat');
+}
+
 montarGrid(modelo, seleccion, toggle);
 montarSelector(modelo, seleccion, quitarSlot);
 montarResultado(modelo, seleccion);
-montarGrupos(modelo);
+montarGrupos(modelo, verLinaje);
 
 /* ---------- Bottom sheet ---------- */
 
